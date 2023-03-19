@@ -1,0 +1,31 @@
+[{
+  "_id": 123456,
+  "Nombre": "Pajarito",
+  "Barrio": "la granja",
+  "Entrenador": "Pedro Gómez",
+  "Win": 1,
+  "Emp": 1,
+  "Lose": 2,
+  "Gol+": 6,
+  "Gol-": 7
+},{
+  "_id": 123454,
+  "Nombre": "Alcones",
+  "Barrio": "la granja",
+  "Entrenador": "Pedro Suarez",
+  "Win": 3,
+  "Emp": 0,
+  "Lose": 1,
+  "Gol+": 9,
+  "Gol-": 6
+},{
+  "_id": 123453,
+  "Nombre": "Tortugas",
+  "Barrio": "las Ferias",
+  "Entrenador": "Kelly Gómez",
+  "Win": 1,
+  "Emp": 1,
+  "Lose": 2,
+  "Gol+": 5,
+  "Gol-": 6
+}]

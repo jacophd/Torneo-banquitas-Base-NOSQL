@@ -1,0 +1,19 @@
+[{
+  "_id": 123461,
+  "nombre": "Julio Alvarez",
+  "Edad": 35,
+  "Formación": "Preparador fisico",
+  "Próxima Fecha": "18/03/2023"
+},{
+  "_id": 123462,
+  "nombre": "Diego Pupo",
+  "Edad": 37,
+  "Formación": "Arbitro",
+  "Próxima Fecha": "19/03/2023"
+},{
+  "_id": 123463,
+  "nombre": "Marcelo Hurtado",
+  "Edad": 45,
+  "Formación": "Docente educación física",
+  "Próxima Fecha": "20/03/2023"
+}]

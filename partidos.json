@@ -1,0 +1,61 @@
+[{
+  "_id": 198765,
+  "Local": "Pajarito",
+  "Visitante": "Alcones",
+  "Fecha": "18/03/2023",
+  "Estadio": "La Granja",
+  "Resultado": {
+    "Ganador": "Pajarito",
+    "Marcador": "3-1"
+  }
+},{
+  "_id": 198766,
+  "Local": "Alcones",
+  "Visitante": "Pajarito",
+  "Fecha": "19/03/2023",
+  "Estadio": "La Granja",
+  "Resultado": {
+    "Ganador": "Alcones",
+    "Marcador": "3-1"
+  }
+},{
+  "_id": 198767,
+  "Local": "Pajarito",
+  "Visitante": "Tortugas",
+  "Fecha": "20/03/2023",
+  "Estadio": "Las Ferias",
+  "Resultado": {
+    "Ganador": "Empate",
+    "Marcador": "1-1"
+  }
+},{
+  "_id": 198768,
+  "Local": "Tortugas",
+  "Visitante": "Pajarito",
+  "Fecha": "18/03/2023",
+  "Estadio": "Las Ferias",
+  "Resultado": {
+    "Ganador": "Tortugas",
+    "Marcador": "2-1"
+  }
+},{
+  "_id": 198769,
+  "Local": "Alcones",
+  "Visitante": "Tortugas",
+  "Fecha": "19/03/2023",
+  "Estadio": "La Granja",
+  "Resultado": {
+    "Ganador": "Alcones",
+    "Marcador": "3-1"
+  }
+},{
+  "_id": 198761,
+  "Local": "Tortugas",
+  "Visitante": "Alcones",
+  "Fecha": "20/03/2023",
+  "Estadio": "Las Ferias",
+  "Resultado": {
+    "Ganador": "Alcones",
+    "Marcador": "2-1"
+  }
+}]

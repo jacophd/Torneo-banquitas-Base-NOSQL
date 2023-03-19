@@ -1,0 +1,82 @@
+[{
+  "_id": 123469,
+  "Nombre": "Juan Perez",
+  "Edad": 15,
+  "Número": 10,
+  "TarjetasA": 0,
+  "TarjetasR": 0,
+  "Goles": 3,
+  "Equipo": "Pajarito"
+},{
+  "_id": 123470,
+  "Nombre": "Gustavo Pupo",
+  "Edad": 16,
+  "Número": 9,
+  "TarjetasA": 0,
+  "TarjetasR": 0,
+  "Goles": 1,
+  "Equipo": "Pajarito"
+},{
+  "_id": 123471,
+  "Nombre": "Emanuel Alvarez",
+  "Edad": 17,
+  "Número": 7,
+  "TarjetasA": 0,
+  "TarjetasR": 0,
+  "Goles": 2,
+  "Equipo": "Pajarito"
+},{
+  "_id": 123472,
+  "Nombre": "Jorge Chamorro",
+  "Edad": 37,
+  "Número": 9,
+  "TarjetasA": 1,
+  "TarjetasR": 0,
+  "Goles": 3,
+  "Equipo": "Alcones"
+},{
+  "_id": 123473,
+  "Nombre": "Alejandro Alvarez",
+  "Edad": 27,
+  "Número": 7,
+  "TarjetasA": 2,
+  "TarjetasR": 0,
+  "Goles": 3,
+  "Equipo": "Alcones"
+},{
+  "_id": 123474,
+  "Nombre": "Dario Suarez",
+  "Edad": 30,
+  "Número": 10,
+  "TarjetasA": 0,
+  "TarjetasR": 0,
+  "Goles": 3,
+  "Equipo": "Alcones"
+},{
+  "_id": 123475,
+  "Nombre": "Jairo Niño",
+  "Edad": 18,
+  "Número": 9,
+  "TarjetasA": 0,
+  "TarjetasR": 0,
+  "Goles": 2,
+  "Equipo": "Tortugas"
+},{
+  "_id": 123476,
+  "Nombre": "Ricardo Suarez",
+  "Edad": 19,
+  "Número": 10,
+  "TarjetasA": 0,
+  "TarjetasR": 1,
+  "Goles": 1,
+  "Equipo": "Tortugas"
+},{
+  "_id": 123477,
+  "Nombre": "Gonzalo Ordoñez",
+  "Edad": 30,
+  "Número": 7,
+  "TarjetasA": 2,
+  "TarjetasR": 0,
+  "Goles": 2,
+  "Equipo": "Tortugas"
+}]

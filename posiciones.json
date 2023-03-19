@@ -1,0 +1,25 @@
+[{
+  "_id": 7894125,
+  "Equipo": "Alcones",
+  "PartidosWin": 3,
+  "PartidosEmp": 0,
+  "PartidosLose": 1,
+  "DiferenciaGol": 3,
+  "Puntos": 9
+},{
+  "_id": 7894126,
+  "Equipo": "Pajarito",
+  "PartidosWin": 1,
+  "PartidosEmp": 1,
+  "PartidosLose": 2,
+  "DiferenciaGol": -1,
+  "Puntos": 4
+},{
+  "_id": 7894127,
+  "Equipo": "Tortugas",
+  "PartidosWin": 1,
+  "PartidosEmp": 1,
+  "PartidosLose": 2,
+  "DiferenciaGol": -1,
+  "Puntos": 4
+}]
