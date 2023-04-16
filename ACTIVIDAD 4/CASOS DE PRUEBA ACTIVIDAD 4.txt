@@ -1,0 +1,104 @@
+/*CLUSTER
+
+SERVIDOR---------------------------------------------------------------------------------*/
+
+cluster=new ShardingTest ({shards: 3, chunksize:1})
+
+/*CLIENTE----------------------------------------------------------------------------------
+ES NECESARIO EJECUTAR LOS PASOS DE LA ACTIVIDAD 3 PREVIAMENTE*/
+
+db=(new Mongo("localhost:20006")).getDB("banquitasdb")
+sh.status()
+sh.getBalancerState()
+
+/*CP01 PROBAMOS EL BALANCEO*/
+mongos> db=(new Mongo("localhost:20006")).getDB("banquitasdb")
+banquitasdb
+mongos> for (i= 0; i <10000; i++) {
+... db.jugadores.insert({
+...   "_id": 1+i,
+...   "Nombre": "Juan Perez"+i,
+...   "Edad": 16,
+...   "Número": 1 +i,
+...   "TarjetasA": 0,
+...   "TarjetasR": 0,
+...   "Goles": 0,
+...   "Equipo": "Pajarito +i"
+...   });
+... }
+WriteResult({ "nInserted" : 1 })
+mongos> db.jugadores.count()
+10000
+mongos> shard0 = new Mongo("DESKTOP-GMLNR1B:20000")
+connection to DESKTOP-GMLNR1B:20000
+mongos> shard0DB = shard0.getDB("banquitasdb")
+banquitasdb
+mongos> shard0DB.jugadores.count()
+0
+mongos> shard1= new Mongo("DESKTOP-GMLNR1B:20001")
+connection to DESKTOP-GMLNR1B:20001
+mongos> shard1DB = shard1.getDB("banquitasdb")
+banquitasdb
+mongos> shard1DB.jugadores.count()
+10000
+
+
+/*CP02 PROBAMOS QUE LA CARGA DE DATOS SEA INFERIOR A UN SEGUNDO, 0MS SEGUN REPORTA LA CONSOLA*/
+
+mongos> db.equipos.insertMany([
+... {"_id": 123456,"Nombre": "Ladrillos","Barrio": "Chapinero","Entrenador": "Pedro Perez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+... {"_id": 323456,"Nombre": "Troncos","Barrio": "Barrios Unidos","Entrenador": "Pedro Rojas","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+... {"_id": 423456,"Nombre": "Tejones","Barrio": "Castellana","Entrenador": "Diego Gómez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+... {"_id": 523456,"Nombre": "Varados","Barrio": "Cota","Entrenador": "Juan Gómez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+... {"_id": 623456,"Nombre": "Tenderos","Barrio": "Chia","Entrenador": "Marcelo Gómez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7}]);
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                123456,
+                323456,
+                423456,
+                523456,
+                623456
+        ]
+}
+
+
+/*CP03 PROBAMOS EL TIEMPO DE RESPUESTA 0MS SEGUN LA CONSOLA*/
+
+mongos> db.equipos.count()
+5
+mongos> db.jugadores.count()
+10000
+
+
+
+
+/*CP04 PROBAMOS EN CUAL SHARD QUEDA GUARDADA LA INSERCIÓN*/
+
+mongos> shard0 = new Mongo("DESKTOP-GMLNR1B:20000")
+connection to DESKTOP-GMLNR1B:20000
+mongos> shard0DB = shard0.getDB("banquitasdb")
+banquitasdb
+mongos> shard0DB.equipos.count()
+0
+mongos> shard1= new Mongo("DESKTOP-GMLNR1B:20001")
+connection to DESKTOP-GMLNR1B:20001
+mongos> shard1DB = shard1.getDB("banquitasdb")
+banquitasdb
+mongos> shard1DB.equipos.count()
+5
+
+SERVIDOR---------------------------------------------------------------------------------
+
+/*PARAR EL CLUSTER*/
+cluster.stop()
+
+
+
+
+
+
+
+
+
+
