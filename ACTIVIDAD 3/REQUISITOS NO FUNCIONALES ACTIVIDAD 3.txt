@@ -1,0 +1,215 @@
+/*RNF01
+
+INSERTAMOS LOS DATOS Y VALIDAMOS EN CUAL SHARD SE GUARDARON VEMOS QUE EN ESTE CASO ES EN EL SEGUNDO: SHARD1 */
+
+db=(new Mongo("localhost:20006")).getDB("banquitasdb")
+banquitasdb
+mongos>
+mongos> for (i= 0; i <800000; i++) {
+... db.jugadores.insert({
+...   "_id": 1+i,
+...   "Nombre": "Juan Perez"+i,
+...   "Edad": 16,
+...   "Número": 1 +i,
+...   "TarjetasA": 0,
+...   "TarjetasR": 0,
+...   "Goles": 0,
+...   "Equipo": "Pajarito +i"
+...   });
+... }
+
+{ ts: Timestamp(1681599428, 1), t: 1 }
+
+> shard0 = new Mongo("DESKTOP-GMLNR1B:20000")
+connection to DESKTOP-GMLNR1B:20000
+> shard0DB = shard0.getDB("banquitasdb")
+banquitasdb
+> shard0DB.jugadores.count()
+0
+> shard1= new Mongo("DESKTOP-GMLNR1B:20001")
+connection to DESKTOP-GMLNR1B:20001
+> shard1DB = shard1.getDB("banquitasdb")
+banquitasdb
+> shard1DB.jugadores.count()
+800000
+> shard2= new Mongo("DESKTOP-GMLNR1B:20002")
+connection to DESKTOP-GMLNR1B:20002
+> shard2DB = shard2.getDB("banquitasdb")
+banquitasdb
+> shard2DB.jugadores.count()
+0
+
+/*RNF02
+
+INSERTARMOS DATOS EN UNA COLECCIÓN DESDE EL TERCER SHARD SHARD2, QUE ESTAVA VACIO Y CONTAMOS*/
+mongos> shard2= new Mongo("DESKTOP-GMLNR1B:20002")
+connection to DESKTOP-GMLNR1B:20002
+mongos> shard2DB = shard2.getDB("banquitasdb")
+banquitasdb
+mongos> shard2DB.arbitros.insertMany([
+... {"_id": 953469,"nombre": "Julio Gomez","Edad": 35,"Formación": "Preparador fisico","Próxima Fecha": "18/04/2023"},
+... {"_id": 863469,"nombre": "Jaime Alvarez","Edad": 36,"Formación": "Preparador fisico","Próxima Fecha": "18/04/2023"},
+... {"_id": 773469,"nombre": "Peter Parker","Edad": 38,"Formación": "Abogado","Próxima Fecha": "18/05/2023"},
+... {"_id": 683469,"nombre": "Nestor Abella","Edad": 45,"Formación": "Locutor","Próxima Fecha": "18/05/2023"},
+... {"_id": 593469,"nombre": "Dario Pupo","Edad": 75,"Formación": "Ingeniero","Próxima Fecha": "18/05/2023"}]);
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                953469,
+                863469,
+                773469,
+                683469,
+                593469
+        ]
+}
+mongos> shard2DB.arbitros.count()
+5
+
+/*RNF03
+
+SE INSERTAN 10000 REGISTROS MAS PARA TRATAR DE VALIDAR EL PARTICIONADO, LUEGO DE REALIZAR LOS PRIMEROS COMANDOS Y ACTIVAR EL SHARD Y EL BALANCER, AUN ASI NO SE HA COPADO LA CAPACIDAD MÁXIMA DEL NODO Y SE ALMACENAN NUEVAMENTE EN EL SEGUNDO SHARD*/
+> db=(new Mongo("localhost:20006")).getDB("banquitasdb")
+banquitasdb
+mongos> for (i= 880000; i <890000; i++) {
+... db.jugadores.insert({
+...   "_id": 1+i,
+...   "Nombre": "Juan Perez"+i,
+...   "Edad": 16,
+...   "Número": 1 +i,
+...   "TarjetasA": 0,
+...   "TarjetasR": 0,
+...   "Goles": 0,
+...   "Equipo": "Pajarito +i"
+...   });
+... }
+WriteResult({ "nInserted" : 1 })
+mongos> shard0 = new Mongo("DESKTOP-GMLNR1B:20000")
+connection to DESKTOP-GMLNR1B:20000
+mongos> shard0DB = shard0.getDB("banquitasdb")
+banquitasdb
+mongos> shard0DB.jugadores.count()
+0
+mongos> shard1= new Mongo("DESKTOP-GMLNR1B:20001")
+connection to DESKTOP-GMLNR1B:20001
+mongos> shard1DB = shard1.getDB("banquitasdb")
+banquitasdb
+mongos> shard1DB.jugadores.count()
+810000
+mongos> shard2= new Mongo("DESKTOP-GMLNR1B:20002")
+connection to DESKTOP-GMLNR1B:20002
+mongos> shard2DB = shard2.getDB("banquitasdb")
+banquitasdb
+mongos> shard2DB.jugadores.count()
+0
+mongos>
+
+
+/*
+RNF04 
+SE INTENTA INSERTAR UNA COLECCIÓN YA EXISTENTE EN LA BASE, SIN EXITO, ESTE ERROR NO LO PERMITE*/
+
+mongos> db.equipos.insertMany([
+  ... {"_id": 923456,"Nombre": "Ladrillos","Barrio": "Chapinero","Entrenador": "Pedro Perez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+  ... {"_id": 823456,"Nombre": "Troncos","Barrio": "Barrios Unidos","Entrenador": "Pedro Rojas","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+  ... {"_id": 723456,"Nombre": "Tejones","Barrio": "Castellana","Entrenador": "Diego Gómez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+  ... {"_id": 623456,"Nombre": "Varados","Barrio": "Cota","Entrenador": "Juan Gómez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+  ... {"_id": 523456,"Nombre": "Tenderos","Barrio": "Chia","Entrenador": "Marcelo Gómez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7}]);
+  2023-04-15T18:57:06.630-0500 E  QUERY    [js] BulkWriteError({
+          "writeErrors" : [
+                  {
+                          "index" : 0,
+                          "code" : 11000,
+                          "errmsg" : "E11000 duplicate key error collection: banquitasdb.equipos index: _id_ dup key: { _id: 923456.0 }",
+                          "op" : {
+                                  "_id" : 923456,
+                                  "Nombre" : "Ladrillos",
+                                  "Barrio" : "Chapinero",
+                                  "Entrenador" : "Pedro Perez",
+                                  "Win" : 1,
+                                  "Emp" : 1,
+                                  "Lose" : 2,
+                                  "Gol+" : 6,
+                                  "Gol-" : 7
+                          }
+                  }
+          ],
+          "writeConcernErrors" : [ ],
+          "nInserted" : 0,
+          "nUpserted" : 0,
+          "nMatched" : 0,
+          "nModified" : 0,
+          "nRemoved" : 0,
+          "upserted" : [ ]
+  }) :
+  BulkWriteError({
+          "writeErrors" : [
+                  {
+                          "index" : 0,
+                          "code" : 11000,
+                          "errmsg" : "E11000 duplicate key error collection: banquitasdb.equipos index: _id_ dup key: { _id: 923456.0 }",
+                          "op" : {
+                                  "_id" : 923456,
+                                  "Nombre" : "Ladrillos",
+                                  "Barrio" : "Chapinero",
+                                  "Entrenador" : "Pedro Perez",
+                                  "Win" : 1,
+                                  "Emp" : 1,
+                                  "Lose" : 2,
+                                  "Gol+" : 6,
+                                  "Gol-" : 7
+                          }
+                  }
+          ],
+          "writeConcernErrors" : [ ],
+          "nInserted" : 0,
+          "nUpserted" : 0,
+          "nMatched" : 0,
+          "nModified" : 0,
+          "nRemoved" : 0,
+          "upserted" : [ ]
+  })
+  BulkWriteError@src/mongo/shell/bulk_api.js:367:48
+  BulkWriteResult/this.toError@src/mongo/shell/bulk_api.js:332:24
+  Bulk/this.execute@src/mongo/shell/bulk_api.js:1186:23
+  DBCollection.prototype.insertMany@src/mongo/shell/crud_api.js:326:5
+  @(shell):1:1
+  mongos>
+  
+  /*
+  LUEGO SE INTENTA INSERTAR UNA COLECCIÓN PARECIDA A LA ANTERIOR CON ID DIFERENTE, AUNQUE LOS DATOS DEL DOCUMENTO SON LOS MISMOS MONGO LO ASUME COMO UN REGISTRO DIFERENTE */
+  
+  mongos> db.equipos.insertMany([
+  ... {"_id": 993456,"Nombre": "Ladrillos","Barrio": "Chapinero","Entrenador": "Pedro Perez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+  ... {"_id": 883456,"Nombre": "Troncos","Barrio": "Barrios Unidos","Entrenador": "Pedro Rojas","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+  ... {"_id": 773456,"Nombre": "Tejones","Barrio": "Castellana","Entrenador": "Diego Gómez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+  ... {"_id": 663456,"Nombre": "Varados","Barrio": "Cota","Entrenador": "Juan Gómez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+  ... {"_id": 553456,"Nombre": "Tenderos","Barrio": "Chia","Entrenador": "Marcelo Gómez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7}]);
+  {
+          "acknowledged" : true,
+          "insertedIds" : [
+                  993456,
+                  883456,
+                  773456,
+                  663456,
+                  553456
+          ]
+  }
+  
+  /*
+  POR ULTIMO SE INSERTA UNA COLECCIÓN SIMILAR CON CAMPOS AUSENTES, MONGO ACEPTA LAS INSERCIONES DE ESTE TIPO PUESTO QUE EL DATO DE LA BASE ES UN DOCUMENTO Y NO UNA TABLA, POR LO TANTO PUEDE TOLERAR ESTE TIPO DE "ERRORES"*/ 
+  mongos> db.equipos.insertMany([
+  ... {"_id": 995456,"Nombre": "Ladrillos","Barrio": "Chapinero","Entrenador": "Pedro Perez","Win": 1,"Emp": 1,"Lose": 2},
+  ... {"_id": 885456,"Nombre": "Troncos","Barrio": "Barrios Unidos","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+  ... {"_id": 775456,"Nombre": "Tejones","Entrenador": "Diego Gómez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+  ... {"_id": 665456,"Nombre": "Varados","Barrio": "Cota","Entrenador": "Juan Gómez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+  ... {"_id": 555456,"Nombre": "Tenderos","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7}]);
+  {
+          "acknowledged" : true,
+          "insertedIds" : [
+                  995456,
+                  885456,
+                  775456,
+                  665456,
+                  555456
+          ]
+  }

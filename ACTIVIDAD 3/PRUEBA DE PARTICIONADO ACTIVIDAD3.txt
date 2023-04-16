@@ -1,0 +1,94 @@
+/*CLUSTER
+
+SERVIDOR---------------------------------------------------------------------------------*/
+
+cluster=new ShardingTest ({shards: 3, chunksize:1})
+
+/*CLIENTE----------------------------------------------------------------------------------*/
+
+db=(new Mongo("localhost:20006")).getDB("banquitasdb")
+
+/*INSERTAMOS 800000 REGISTROS EN JUGADORES*/
+for (i= 0; i <800000; i++) {
+db.jugadores.insert({
+  "_id": 1+i,
+  "Nombre": "Juan Perez"+i,
+  "Edad": 16,
+  "Número": 1 +i,
+  "TarjetasA": 0,
+  "TarjetasR": 0,
+  "Goles": 0,
+  "Equipo": "Pajarito +i"
+  });
+}
+
+/*INSERTAR 5 REGISTROS EN LA COLECCIÓN EQUIPOS*/
+
+db.equipos.insertMany([
+{"_id": 923456,"Nombre": "Ladrillos","Barrio": "Chapinero","Entrenador": "Pedro Perez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+{"_id": 823456,"Nombre": "Troncos","Barrio": "Barrios Unidos","Entrenador": "Pedro Rojas","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+{"_id": 723456,"Nombre": "Tejones","Barrio": "Castellana","Entrenador": "Diego Gómez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+{"_id": 623456,"Nombre": "Varados","Barrio": "Cota","Entrenador": "Juan Gómez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7},
+{"_id": 523456,"Nombre": "Tenderos","Barrio": "Chia","Entrenador": "Marcelo Gómez","Win": 1,"Emp": 1,"Lose": 2,"Gol+": 6,"Gol-": 7}]);
+
+/*5 MAS EN COLECCIÓN ARBITROS*/
+
+db.arbitros.insertMany([
+{"_id": 923461,"nombre": "Julio Gomez","Edad": 35,"Formación": "Preparador fisico","Próxima Fecha": "18/04/2023"},
+{"_id": 823461,"nombre": "Jaime Alvarez","Edad": 36,"Formación": "Preparador fisico","Próxima Fecha": "18/04/2023"},
+{"_id": 723461,"nombre": "Peter Parker","Edad": 38,"Formación": "Abogado","Próxima Fecha": "18/05/2023"},
+{"_id": 623461,"nombre": "Nestor Abella","Edad": 45,"Formación": "Locutor","Próxima Fecha": "18/05/2023"},
+{"_id": 523461,"nombre": "Dario Pupo","Edad": 75,"Formación": "Ingeniero","Próxima Fecha": "18/05/2023"}]);
+
+/*VERIFICAR INSERCIÓN*/
+
+db.jugadores.count()
+db.equipos.count()
+db.arbitros.count()
+
+
+/*COMPROBACIÓN DE LA DISTRIBUCIÓN EN NODOS*/
+
+shard0 = new Mongo("DESKTOP-GMLNR1B:20000")
+shard0DB = shard0.getDB("banquitasdb")
+shard0DB.jugadores.count()
+
+shard1= new Mongo("DESKTOP-GMLNR1B:20001")
+shard1DB = shard1.getDB("banquitasdb")
+shard1DB.jugadores.count()
+
+shard2= new Mongo("DESKTOP-GMLNR1B:20002")
+shard2DB = shard2.getDB("banquitasdb")
+shard2DB.jugadores.count()
+
+/*ACTIVACIÓN DEL SHARDING*/
+
+shard0 = new Mongo("localhost:20006") 
+sh.status()
+sh.enableSharding("banquitasdb")
+db.jugadores.ensureIndex({nombre : 1})
+
+DETERMINAR COLECCION CON NOMBRE DE USUARIO
+sh.shardCollection("banquitasdb.jugadores", {nombre: 1})
+
+/*ACTIVACIÓN DEL BALANCEADOR*/
+
+sh.getBalancerState()
+
+sh.setBalancerState(true) 
+sh.isBalancerRunning()
+
+SERVIDOR---------------------------------------------------------------------------------
+
+/*PARAR EL CLUSTER*/
+cluster.stop()
+
+
+
+
+
+
+
+
+
+
