@@ -1,0 +1,58 @@
+crear replicaset
+
+MiejReplicaSet = new ReplSetTest ({name: "MireplicaSet", nodes: 3})
+MiejReplicaSet = new ReplSetTest ({name: "MireplicaSet", nodes: 3}); print("hecho")
+MiejReplicaSet.startSet()
+MiejReplicaSet.initiate()
+
+0= "DESKTOP-GMLNR1B:20000"
+1= "DESKTOP-GMLNR1B:20001"
+3= "DESKTOP-GMLNR1B:20002"
+
+
+conectar al nodo primario y verificar
+
+conn=new Mongo("DESKTOP-GMLNR1B:20000")
+testDB=conn.getDB("Biblioteca")
+testDB.isMaster()
+
+insertar datos en el nodo primario
+
+testDB.Editoriales.insert(
+{
+id_editorial: "1 ",
+nombre : " McGraw Hill ",
+pais: " USA ",
+grupo: " McGraw Hill Ed. "
+});
+
+testDB.Editoriales.insert(
+{
+id_editorial: "2 ",
+nombre : " Pearson ",
+pais: " USA ",
+grupo: " Pearson Ed. "
+});
+
+comprobar la insersión
+testDB.Editoriales.count();
+
+prueba nodo secundario
+connSecondary = new Mongo("DESKTOP-GMLNR1B:20001")
+secondaryTestDB = connSecondary.getDB("Biblioteca")
+secondaryTestDB.isMaster()
+secondaryTestDB.Editoriales.count();
+connSecondary.setSecondaryOk()
+secondaryTestDB.Editoriales.findOne()
+
+parar nodo primario
+connPrimary = new Mongo("DESKTOP-GMLNR1B:20000")
+primaryDB = connPrimary.getDB("Biblioteca")
+primaryDB.isMaster()
+primaryDB.adminCommand({shutdown : 1});
+
+comprobar el nuevo nodo 
+connNewPrimary = new Mongo("localhost:27017")
+newPrimaryDB = connNewPrimary.getDB("Biblioteca")
+newPrimaryDB.isMaster()
+
